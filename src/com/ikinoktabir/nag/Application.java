@@ -13,7 +13,7 @@ public class Application extends JFrame {
 
     public static final int PIXELS_W = 490;
     public static final int PIXELS_H = 740;
-    public static final int RENDER_PER_MINUTE = 120;
+    public static final int RENDER_PER_MINUTE = 240;
 
     public Application() {
         initUI();
