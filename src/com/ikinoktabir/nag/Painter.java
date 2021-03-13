@@ -2,6 +2,8 @@ package com.ikinoktabir.nag;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.EventQueue;
 import java.io.File;
@@ -12,16 +14,42 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.util.Date;
 
+import javax.swing.Timer;
+
 public class Painter extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    public static final int PIXELS_H = 890;
-    public static final int PIXELS_W = 640;
+    private final Timer repaintTimer;
+    private final Assets assets;
+    private int index;
+    private final File folder;
 
-    public Painter() {
+    public Painter(int width, int height, int rpm, Assets assets) {
         super();
 
-        setSize(PIXELS_W, PIXELS_H);
+        this.assets = assets;
+        
+        assets.build();
+
+        folder = new File("outputs/" + new SimpleDateFormat("yyyymmddhhmmss").format(new Date()));
+        folder.mkdir();
+
+        setSize(width, height);
+
+        repaintTimer = new Timer(60 * 1000 / rpm, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                index++;
+
+                if (index >= assets.combinations().length) {
+                    repaintTimer.stop();
+                } else {
+                    repaint();
+                }
+            }
+        });
+
+        repaintTimer.start();
     }
 
     @Override
@@ -30,38 +58,29 @@ public class Painter extends JPanel {
 
         draw(g);
 
-        save("image");
+        save();
     }
 
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, PIXELS_W, PIXELS_H);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
-        g.drawImage(load("sunglasses/image"), 0, 0, this);
-        g.drawImage(load("sunglasses/sunglasses-glasses-png-image-55266d1df8084d83c93538553e149524"), 0, 0, this);
-
-        g.setColor(Color.BLACK);
-        g.drawLine(0, 0, 100, 100);
-    }
-
-    public BufferedImage load(String asset) {
-        try {
-            return ImageIO.read(new File("assets/" + asset + ".png"));
-        } catch (IOException e) {
-            throw new Error(e);
+        for (var sample : assets.combination(index).samples()) {
+            g.drawImage(sample.image(), 0, 0, this);
         }
     }
 
-    public void save(String output) {
+    public void save() {
         var bImg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         var cg = bImg.createGraphics();
 
         draw(cg);
 
+        var fileName = folder.getPath() + "/cryptodog_" + index + ".png";
+
         EventQueue.invokeLater(() -> {
             try {
-                var fileName = new SimpleDateFormat("yyyymmddhhmmss").format(new Date());
-                ImageIO.write(bImg, "png", new File("outputs/" + output + "_" + fileName + ".png"));
+                ImageIO.write(bImg, "png", new File(fileName));
             } catch (IOException e) {
                 e.printStackTrace();
             }
