@@ -1,13 +1,20 @@
 package com.ikinoktabir.nag;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 public class Category {
     private final Sample[] samples;
     private Category next;
 
     public Category(File folder) {
-        var files = folder.listFiles();
+        var files = folder.listFiles(new FilenameFilter(){
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".png");
+            }
+        });
+        
         samples = new Sample[files.length];
 
         for (var i = 0; i < files.length; i++) {

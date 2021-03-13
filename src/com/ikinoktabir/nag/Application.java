@@ -11,8 +11,8 @@ public class Application extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int PIXELS_H = 890;
-    public static final int PIXELS_W = 640;
+    public static final int PIXELS_W = 490;
+    public static final int PIXELS_H = 740;
     public static final int RENDER_PER_MINUTE = 120;
 
     public Application() {
