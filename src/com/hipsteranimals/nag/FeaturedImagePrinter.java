@@ -8,10 +8,8 @@ import java.awt.Graphics2D;
 public class FeaturedImagePrinter extends Printer {
     private static final long serialVersionUID = 1L;
 
-    private double scaleRate = 0.1;
-
-    private int tThumbWidth = (int) (Application.PIXELS_W * scaleRate);
-    private int tThumbHeight = (int) (Application.PIXELS_H * scaleRate);
+    private int tThumbWidth = (int) (Application.PIXELS_W * Application.SCALE_RATE);
+    private int tThumbHeight = (int) (Application.PIXELS_H * Application.SCALE_RATE);
 
     public FeaturedImagePrinter(PrintOptions options, Collection collection) {
         super(options, collection);
@@ -33,7 +31,7 @@ public class FeaturedImagePrinter extends Printer {
             System.out.printf("drawing @ (%d/%d, %d/%d)", col, maxCol, row, maxRow);
             System.out.println();
 
-            drawCollectable(collectable, g, col * tThumbWidth, row * tThumbHeight, scaleRate);
+            drawCollectable(collectable, g, col * tThumbWidth, row * tThumbHeight, Application.SCALE_RATE);
 
             g.setColor(Color.WHITE);
             g.setStroke(new BasicStroke(2));
