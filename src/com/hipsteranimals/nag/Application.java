@@ -1,6 +1,9 @@
 package com.hipsteranimals.nag;
 
 import java.awt.EventQueue;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JFrame;
 
@@ -22,14 +25,21 @@ public class Application extends JFrame {
     }
 
     private void initUI() {
-        //setSize(PIXELS_W, PIXELS_H + 20);
-        //setTitle("NAG");
+        setTitle("NAG");
+        // setSize(PIXELS_W, PIXELS_H + 20);
         setSize(F_I_PIXELS_W, F_I_PIXELS_H + 20);
-        setTitle("FI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        //add(new CardPainter(PIXELS_W, PIXELS_H, RENDER_PER_MINUTE, new Assets("assets")));
-        add(new FeaturedImagePainter(F_I_PIXELS_W, F_I_PIXELS_H, RENDER_PER_MINUTE, new Assets("assets")));
+        var folder = new File("outputs/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        var dogs = new Collection("assets");
+        dogs.build();
+
+        // add(new CardPrinter(folder, PIXELS_W, PIXELS_H, RENDER_PER_MINUTE, dogs));
+        add(new FeaturedImagePrinter(new PrintOptions(folder, F_I_PIXELS_W, F_I_PIXELS_H), dogs));
     }
 }

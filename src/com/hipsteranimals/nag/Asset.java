@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class Sample {
-    public static final String SCALE_DEFAULT = null;
+public class Asset {
+    private final Category category;
     private final File file;
-    private Category category;
+    private Image image;
 
-    public Sample(Category category, File file) {
+    public Asset(Category category, File file) {
         this.category = category;
         this.file = file;
     }
@@ -21,10 +21,14 @@ public class Sample {
     }
 
     public Image image() {
-        try {
-            return ImageIO.read(file);
-        } catch (IOException e) {
-            throw new Error(e);
+        if(image == null){
+            try {
+                image = ImageIO.read(file);
+            } catch (IOException e) {
+                throw new Error(e);
+            }
         }
+
+        return image;
     }
 }
