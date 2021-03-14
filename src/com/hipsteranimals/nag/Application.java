@@ -36,7 +36,7 @@ public class Application extends JFrame {
             folder.mkdirs();
         }
 
-        var dogs = new Collection("assets");
+        var dogs = new Collection("assets/HipsterDogs");
         dogs.build();
 
         // add(new CardPrinter(folder, PIXELS_W, PIXELS_H, RENDER_PER_MINUTE, dogs));
