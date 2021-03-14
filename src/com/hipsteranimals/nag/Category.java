@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 public class Category {
-    private final Sample[] samples;
+    private final Asset[] assets;
     private Category next;
 
     public Category(File folder) {
@@ -15,15 +15,15 @@ public class Category {
             }
         });
         
-        samples = new Sample[files.length];
+        assets = new Asset[files.length];
 
         for (var i = 0; i < files.length; i++) {
-            samples[i] = new Sample(this, files[i]);
+            assets[i] = new Asset(this, files[i]);
         }
     }
 
-    public Sample[] samples() {
-        return samples;
+    public Asset[] assets() {
+        return assets;
     }
 
     public void next(Category next) {
@@ -34,21 +34,22 @@ public class Category {
         return next;
     }
 
-    public Combination[] build() {
-        Combination[] result;
+    public Collectable[] build() {
+        Collectable[] result;
+        
         if (next == null) {
-            result = new Combination[samples.length];
+            result = new Collectable[assets.length];
 
-            for (var i = 0; i < samples.length; i++) {
-                result[i] = new Combination(samples[i]);
+            for (var i = 0; i < assets.length; i++) {
+                result[i] = new Collectable(assets[i]);
             }
         } else {
-            var combinations = next.build();
-            result = new Combination[samples.length * combinations.length];
+            var collectables = next.build();
+            result = new Collectable[assets.length * collectables.length];
 
-            for (var i = 0; i < samples.length; i++) {
-                for (var j = 0; j < combinations.length; j++) {
-                    result[i * combinations.length + j] = new Combination(samples[i], combinations[j]);
+            for (var i = 0; i < assets.length; i++) {
+                for (var j = 0; j < collectables.length; j++) {
+                    result[i * collectables.length + j] = new Collectable(assets[i], collectables[j]);
                 }
             }
         }

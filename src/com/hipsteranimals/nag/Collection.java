@@ -3,13 +3,14 @@ package com.hipsteranimals.nag;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
-public class Assets {
+public class Collection {
     private final Category[] categories;
-    private Combination[] combinations;
+    private Collectable[] collectables;
 
-    public Assets(String folder) {
+    public Collection(String folder) {
         var folders = new File(folder).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -34,24 +35,36 @@ public class Assets {
             return;
         }
 
-        combinations = categories[0].build();
+        collectables = categories[0].build();
     }
 
     public Category[] categories() {
         return categories;
     }
 
-    public Combination[] combinations() {
-        return combinations;
+    public Collectable[] collectables() {
+        return collectables;
     }
 
-    public Combination combination(int index) {
-        return combinations[index];
+    public Collectable[] collectables(boolean shuffle) {
+        if(!shuffle) {
+            return collectables;
+        }
+
+        var shuffledList = Arrays.asList(collectables);
+        Collections.shuffle(shuffledList);
+        
+        var result = new Collectable[collectables.length];
+        shuffledList.toArray(result);
+
+        return result;
     }
 
-    class FileSorter implements Comparator<File> {
-        // Used for sorting in ascending order of
-        // roll number
+    public Collectable collectable(int index) {
+        return collectables[index];
+    }
+
+    private class FileSorter implements Comparator<File> {
         public int compare(File a, File b) {
             return a.getName().compareTo(b.getName());
         }
