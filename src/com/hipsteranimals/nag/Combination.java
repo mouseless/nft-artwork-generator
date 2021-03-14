@@ -20,4 +20,7 @@ public class Combination {
     public Sample[] samples() {
         return samples;
     }
+    public Sample sample(int index) {
+        return samples[index];
+    }
 }

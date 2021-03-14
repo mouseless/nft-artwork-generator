@@ -16,7 +16,7 @@ import java.util.Date;
 
 import javax.swing.Timer;
 
-public class Painter extends JPanel {
+public class CardPainter extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private final Timer repaintTimer;
@@ -24,7 +24,7 @@ public class Painter extends JPanel {
     private int index;
     private final File folder;
 
-    public Painter(int width, int height, int rpm, Assets assets) {
+    public CardPainter(int width, int height, int rpm, Assets assets) {
         super();
 
         this.assets = assets;

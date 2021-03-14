@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Sample {
+    public static final String SCALE_DEFAULT = null;
     private final File file;
     private Category category;
 
