@@ -1,4 +1,4 @@
-package com.ikinoktabir.nag;
+package com.hipsteranimals.nag;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -32,7 +32,10 @@ public class Painter extends JPanel {
         assets.build();
 
         folder = new File("outputs/" + new SimpleDateFormat("yyyymmddhhmmss").format(new Date()));
-        folder.mkdir();
+        
+        if(!folder.exists()) {
+            folder.mkdirs();
+        }
 
         setSize(width, height);
 

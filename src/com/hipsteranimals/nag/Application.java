@@ -1,4 +1,4 @@
-package com.ikinoktabir.nag;
+package com.hipsteranimals.nag;
 
 import java.awt.EventQueue;
 

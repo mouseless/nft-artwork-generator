@@ -1,4 +1,4 @@
-package com.ikinoktabir.nag;
+package com.hipsteranimals.nag;
 
 public class Combination {
     private final Sample[] samples;

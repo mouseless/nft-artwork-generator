@@ -1,2 +1,3 @@
-# nft-artwork-generator
-To generate simple nft artwork
+# NFT ARTWORK GENERATOR
+
+To generate nft artworks of hipster animals
