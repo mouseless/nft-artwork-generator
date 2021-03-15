@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.Timer;
 
 public class CardPrinter extends Printer {
@@ -19,15 +18,26 @@ public class CardPrinter extends Printer {
         repaintTimer = new Timer(60 * 1000 / options.rpm, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                index++;
+                do {
+                    index++;
+                } while (file().exists());
+
+                System.out.printf("Printing card number %d on collection %s", index, collection.name());
+                System.out.println();
 
                 if (index >= collection.collectables().length) {
                     repaintTimer.stop();
+                    finished();
                 } else {
                     repaint();
                 }
             }
         });
+    }
+
+    @Override
+    public void start() {
+        super.start();
 
         repaintTimer.start();
     }
@@ -42,6 +52,16 @@ public class CardPrinter extends Printer {
 
     @Override
     protected String fileName() {
-        return "cryptodog_" + index + ".png";
+        return collection.name() + "_" + index + ".png";
+    }
+
+    @Override
+    protected int width() {
+        return collection.width();
+    }
+
+    @Override
+    protected int height() {
+        return collection.height();
     }
 }

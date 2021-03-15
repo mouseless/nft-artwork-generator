@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-
 public class FeaturedImagePrinter extends Printer {
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +44,17 @@ public class FeaturedImagePrinter extends Printer {
     }
 
     @Override
+    protected int width() {
+        return Application.F_I_PIXELS_W;
+    }
+
+    @Override
+    protected int height() {
+        return Application.F_I_PIXELS_H;
+    }
+
+    @Override
     protected String fileName() {
-        return "cryptodog_feature_image.png";
+        return collection.name() + "_feature_image.png";
     }
 }
