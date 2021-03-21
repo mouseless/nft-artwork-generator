@@ -2,12 +2,13 @@ package com.hipsteranimals.nag;
 
 import java.awt.EventQueue;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
-public class Application extends JFrame {
+public class Application extends JFrame implements Printer.Finished {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new Application().setVisible(true));
     }
@@ -23,26 +24,64 @@ public class Application extends JFrame {
     public static final int RENDER_PER_MINUTE = 240;
     public static final double SCALE_RATE = 0.1;
 
-    public Application() {
-        initUI();
-    }
+    private final List<Printer> printers;
+    private int printerIndex;
 
-    private void initUI() {
-        setTitle("NAG");
-        // setSize(PIXELS_W, PIXELS_H + 20);
-        setSize(F_I_PIXELS_W, F_I_PIXELS_H + 20);
+    public Application() {
+        setTitle("N-A-G");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        var folder = new File("outputs/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        if (!folder.exists()) {
-            folder.mkdirs();
+        var output = new File("outputs");
+        if (!output.exists()) {
+            output.mkdirs();
         }
 
-        var dogs = new Collection("assets/HipsterDogs");
-        dogs.build();
+        var folders = new File("assets").listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.startsWith("Hipster");
+            }
+        });
 
-        // add(new CardPrinter(folder, PIXELS_W, PIXELS_H, RENDER_PER_MINUTE, dogs));
-        add(new FeaturedImagePrinter(new PrintOptions(folder, F_I_PIXELS_W, F_I_PIXELS_H), dogs));
+        printers = new ArrayList<Printer>();
+        printerIndex = 0;
+
+        for (var folder : folders) {
+            var collection = new Collection(folder);
+            collection.build();
+
+            var cardPrinter = new CardPrinter(new PrintOptions(output, RENDER_PER_MINUTE), collection);
+            cardPrinter.addFinishedListener(this);
+            printers.add(cardPrinter);
+
+            var featuredImagePrinter = new FeaturedImagePrinter(new PrintOptions(output), collection);
+            featuredImagePrinter.addFinishedListener(this);
+            printers.add(featuredImagePrinter);
+        }
+
+        printNext();
+    }
+
+    public void printNext() {
+        var printer = printers.get(printerIndex);
+
+        setSize(printer.width(), printer.height() + 20);
+        add(printer);
+
+        printer.start();
+    }
+
+    @Override
+    public void onFinish() {
+        remove(printers.get(printerIndex));
+
+        printerIndex++;
+
+        if(printerIndex >= printers.size()) {
+            return;
+        }
+
+        printNext();
     }
 }

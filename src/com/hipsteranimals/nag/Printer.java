@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.EventQueue;
 
 public abstract class Printer extends JPanel {
@@ -15,17 +17,40 @@ public abstract class Printer extends JPanel {
 
     protected final PrintOptions options;
     protected final Collection collection;
+    private final List<Finished> finishedListeners;
+    private boolean started;
 
     protected Printer(PrintOptions options, Collection collection) {
         this.options = options;
         this.collection = collection;
 
-        setSize(options.width, options.height);
+        finishedListeners = new ArrayList<Finished>();
+        started = false;
+
+        setSize(width(), height());
     }
+
+    public void start() {
+        started = true;
+
+        repaint();
+    }
+
+    protected abstract void draw(Graphics2D g);
+
+    protected abstract int width();
+
+    protected abstract int height();
+
+    protected abstract String fileName();
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        if(!started) {
+            return;
+        }
 
         var bImg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         var cg = bImg.createGraphics();
@@ -34,20 +59,22 @@ public abstract class Printer extends JPanel {
 
         g.drawImage(bImg, 0, 0, this);
 
-        var filePath = options.folder.getPath() + "/" + fileName();
-
         EventQueue.invokeLater(() -> {
             try {
-                ImageIO.write(bImg, "png", new File(filePath));
+                ImageIO.write(bImg, "png", file());
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new Error(e);
             }
         });
     }
 
-    protected abstract void draw(Graphics2D g);
+    protected File file() {
+        return new File(filePath());
+    }
 
-    protected abstract String fileName();
+    protected String filePath() {
+        return options.output.getPath() + "/" + fileName();
+    }
 
     protected void drawCollectable(Collectable collectable, Graphics2D g, int x, int y) {
         drawCollectable(collectable, g, x, y, 1);
@@ -68,5 +95,19 @@ public abstract class Printer extends JPanel {
         var height = (int) (image.getHeight(this) * scaleRate);
 
         return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    }
+
+    public void addFinishedListener(Finished finished) {
+        finishedListeners.add(finished);
+    }
+
+    protected void finished() {
+        for (var finished : finishedListeners) {
+            finished.onFinish();
+        }
+    }
+
+    public interface Finished {
+        public void onFinish();
     }
 }
