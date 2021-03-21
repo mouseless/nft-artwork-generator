@@ -26,5 +26,10 @@ public class Preferences {
      * Number of rows in Featured Image
      */
     public static final int F_I_MAX_COL = 10;
+
+    /**
+     * To be able to limit card printing for test
+     */
+    public static final boolean TEST_MODE = true;
     
 }

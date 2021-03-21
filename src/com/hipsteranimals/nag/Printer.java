@@ -56,7 +56,7 @@ public abstract class Printer extends JPanel {
             return;
         }
 
-        var bImg = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        var bImg = new BufferedImage(width(), height(), BufferedImage.TYPE_INT_ARGB);
         var cg = bImg.createGraphics();
 
         draw((Graphics2D) cg);
@@ -81,7 +81,16 @@ public abstract class Printer extends JPanel {
     }
 
     protected void drawCollectable(Collectable collectable, Graphics2D g, int x, int y) {
-        drawCollectable(collectable, g, x, y, 1);
+        int imageHeight = getHeight();
+        int canvasHeight = 800;
+        double scaleRate = 1.0;
+
+        if (imageHeight > canvasHeight) {
+            scaleRate = ((double) canvasHeight) / imageHeight;
+            drawCollectable(collectable, g, x, y, scaleRate);
+        }
+        System.out.printf("canvas height: %d, image :%d, scaleRate: %f", canvasHeight, imageHeight, scaleRate);
+        drawCollectable(collectable, g, x, y, scaleRate);
     }
 
     protected void drawCollectable(Collectable collectable, Graphics2D g, int x, int y, double scaleRate) {

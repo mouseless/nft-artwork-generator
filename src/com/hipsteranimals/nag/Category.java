@@ -2,22 +2,27 @@ package com.hipsteranimals.nag;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import static com.hipsteranimals.nag.Preferences.*;
 
 public class Category {
     private final Asset[] assets;
     private Category next;
 
     public Category(File folder) {
-        var files = folder.listFiles(new FilenameFilter(){
+        var files = folder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(".png");
             }
         });
-        
-        assets = new Asset[files.length];
 
-        for (var i = 0; i < files.length; i++) {
+        if (TEST_MODE) {
+            assets = new Asset[1];
+        } else {
+            assets = new Asset[files.length];
+        }
+
+        for (var i = 0; i < assets.length; i++) {
             assets[i] = new Asset(this, files[i]);
         }
     }
@@ -36,7 +41,7 @@ public class Category {
 
     public Collectable[] build() {
         Collectable[] result;
-        
+
         if (next == null) {
             result = new Collectable[assets.length];
 

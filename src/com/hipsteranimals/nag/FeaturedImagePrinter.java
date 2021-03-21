@@ -18,7 +18,7 @@ public class FeaturedImagePrinter extends Printer {
         if (!file().exists()) {
             super.paint(g);
         }
-        
+
         if (started()) {
             finish();
         }
@@ -68,6 +68,6 @@ public class FeaturedImagePrinter extends Printer {
 
     @Override
     protected String fileName() {
-        return collection.name() + "_feature_image.png";
+        return collection.name() +"_feature_image.png";
     }
 }

@@ -25,11 +25,6 @@ public class Application extends JFrame implements Printer.Finished {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        var output = new File("outputs");
-        if (!output.exists()) {
-            output.mkdirs();
-        }
-
         var folders = new File("assets").listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -44,13 +39,24 @@ public class Application extends JFrame implements Printer.Finished {
             var collection = new Collection(folder);
             collection.build();
 
-            var cardPrinter = new CardPrinter(new PrintOptions(output, RENDER_PER_MINUTE), collection);
-            cardPrinter.addFinishedListener(this);
-            printers.add(cardPrinter);
+            var output = new File("outputs/" + collection.name());
+            if (!output.exists()) {
+                output.mkdirs();
+            }
+            if (TEST_MODE) {
+                var cardPrinter = new CardPrinter(new PrintOptions(output, RENDER_PER_MINUTE), collection);
+                cardPrinter.addFinishedListener(this);
+                printers.add(cardPrinter);
 
-            var featuredImagePrinter = new FeaturedImagePrinter(new PrintOptions(output), collection);
-            featuredImagePrinter.addFinishedListener(this);
-            printers.add(featuredImagePrinter);
+            } else {
+                var cardPrinter = new CardPrinter(new PrintOptions(output, RENDER_PER_MINUTE), collection);
+                cardPrinter.addFinishedListener(this);
+                printers.add(cardPrinter);
+    
+                var featuredImagePrinter = new FeaturedImagePrinter(new PrintOptions(output), collection);
+                featuredImagePrinter.addFinishedListener(this);
+                printers.add(featuredImagePrinter);
+            }
         }
 
         printNext();
@@ -71,7 +77,7 @@ public class Application extends JFrame implements Printer.Finished {
 
         printerIndex++;
 
-        if(printerIndex >= printers.size()) {
+        if (printerIndex >= printers.size()) {
             return;
         }
 
