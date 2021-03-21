@@ -2,41 +2,54 @@ package com.hipsteranimals.nag;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import static com.hipsteranimals.nag.Preferences.*;
 
 public class FeaturedImagePrinter extends Printer {
     private static final long serialVersionUID = 1L;
-
-    private int tThumbWidth = (int) (Application.PIXELS_W * Application.SCALE_RATE);
-    private int tThumbHeight = (int) (Application.PIXELS_H * Application.SCALE_RATE);
 
     public FeaturedImagePrinter(PrintOptions options, Collection collection) {
         super(options, collection);
     }
 
     @Override
+    public void paint(Graphics g) {
+        if (!file().exists()) {
+            super.paint(g);
+        }
+        
+        if (started()) {
+            finish();
+        }
+    }
+
+    @Override
     public void draw(Graphics2D g) {
-        var maxCol = getWidth() / tThumbWidth + 1;
-        var maxRow = getHeight() / tThumbHeight + 1;
+        int tThumbWidth = this.width() / F_I_MAX_COL;
+        int tThumbHeight = this.height() / F_I_MAX_ROW;
+
+        double scaleRate = ((double) this.width()) / (collection.width() * F_I_MAX_COL);
 
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.fillRect(0, 0, this.width(), this.height());
 
         var collectables = collection.collectables(true);
 
-        for (int i = 0, row = 0, col = 0; row < maxRow; i++, col++) {
+        for (int i = 0, row = 0, col = 0; row < F_I_MAX_ROW; i++, col++) {
             var collectable = collectables[i % collectables.length];
 
-            System.out.printf("drawing @ (%d/%d, %d/%d)", col, maxCol, row, maxRow);
+            System.out.printf("drawing @ (%d/%d, %d/%d)", col, F_I_MAX_COL, row, F_I_MAX_ROW);
             System.out.println();
+            System.out.printf("drawing @ ( width %d, heihgt %d, scale rate %f)", tThumbWidth, tThumbHeight, scaleRate);
 
-            drawCollectable(collectable, g, col * tThumbWidth, row * tThumbHeight, Application.SCALE_RATE);
+            drawCollectable(collectable, g, col * tThumbWidth, row * tThumbHeight, scaleRate);
 
             g.setColor(Color.WHITE);
             g.setStroke(new BasicStroke(2));
             g.drawRect(col * tThumbWidth, row * tThumbHeight, tThumbWidth, tThumbHeight);
 
-            if (col >= maxCol - 1) {
+            if (col >= F_I_MAX_COL - 1) {
                 row++;
                 col = -1;
             }
@@ -45,12 +58,12 @@ public class FeaturedImagePrinter extends Printer {
 
     @Override
     protected int width() {
-        return Application.F_I_PIXELS_W;
+        return F_I_PIXELS_W;
     }
 
     @Override
     protected int height() {
-        return Application.F_I_PIXELS_H;
+        return F_I_PIXELS_H;
     }
 
     @Override

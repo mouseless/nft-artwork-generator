@@ -27,7 +27,7 @@ public class CardPrinter extends Printer {
 
                 if (index >= collection.collectables().length) {
                     repaintTimer.stop();
-                    finished();
+                    finish();
                 } else {
                     repaint();
                 }

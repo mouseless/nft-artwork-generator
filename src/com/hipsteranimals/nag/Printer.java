@@ -36,6 +36,10 @@ public abstract class Printer extends JPanel {
         repaint();
     }
 
+    protected boolean started() {
+        return started;
+    }
+
     protected abstract void draw(Graphics2D g);
 
     protected abstract int width();
@@ -48,7 +52,7 @@ public abstract class Printer extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
-        if(!started) {
+        if (!started) {
             return;
         }
 
@@ -101,7 +105,7 @@ public abstract class Printer extends JPanel {
         finishedListeners.add(finished);
     }
 
-    protected void finished() {
+    protected void finish() {
         for (var finished : finishedListeners) {
             finished.onFinish();
         }

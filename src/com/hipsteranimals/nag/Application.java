@@ -8,21 +8,14 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import static com.hipsteranimals.nag.Preferences.*;
+
 public class Application extends JFrame implements Printer.Finished {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new Application().setVisible(true));
     }
 
     private static final long serialVersionUID = 1L;
-
-    //public static final int PIXELS_W = 1240;
-    //public static final int PIXELS_H = 1754;
-    public static final int PIXELS_W = 490;
-    public static final int PIXELS_H = 740;
-    public static final int F_I_PIXELS_W = 6000;
-    public static final int F_I_PIXELS_H = 4000;
-    public static final int RENDER_PER_MINUTE = 240;
-    public static final double SCALE_RATE = 0.1;
 
     private final List<Printer> printers;
     private int printerIndex;
