@@ -14,12 +14,14 @@ public class Application extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int PIXELS_W = 1240;
-    public static final int PIXELS_H = 1754;
-    public static final int F_I_PIXELS_W = 1200;
-    public static final int F_I_PIXELS_H = 800;
+    //public static final int PIXELS_W = 1240;
+    //public static final int PIXELS_H = 1754;
+    public static final int PIXELS_W = 490;
+    public static final int PIXELS_H = 740;
+    public static final int F_I_PIXELS_W = 6000;
+    public static final int F_I_PIXELS_H = 4000;
     public static final int RENDER_PER_MINUTE = 240;
-    public static final double SCALE_RATE = 0.025;
+    public static final double SCALE_RATE = 0.1;
 
     public Application() {
         initUI();
@@ -37,7 +39,7 @@ public class Application extends JFrame {
             folder.mkdirs();
         }
 
-        var dogs = new Collection("assets/HipsterCats");
+        var dogs = new Collection("assets/HipsterDogs");
         dogs.build();
 
         // add(new CardPrinter(folder, PIXELS_W, PIXELS_H, RENDER_PER_MINUTE, dogs));
