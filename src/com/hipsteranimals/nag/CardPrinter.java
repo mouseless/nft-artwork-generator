@@ -22,7 +22,7 @@ public class CardPrinter extends Printer {
                     index++;
                 } while (file().exists());
 
-                System.out.printf("Printing card number %d on collection %s", index, collection.name());
+                System.out.printf("Card Printer : Printing card number %d on collection %s", index, collection.name());
                 System.out.println();
 
                 if (index >= collection.collectables().length) {
@@ -56,12 +56,12 @@ public class CardPrinter extends Printer {
     }
 
     @Override
-    protected int width() {
+    protected int imageWidth() {
         return collection.width();
     }
 
     @Override
-    protected int height() {
+    protected int imageHeight() {
         return collection.height();
     }
 }

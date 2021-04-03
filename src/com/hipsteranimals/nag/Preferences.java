@@ -16,7 +16,7 @@ public class Preferences {
      * Number of Card Images rendered per minute
      */
     public static final int RENDER_PER_MINUTE = 240;
-    
+
     /**
      * Number of columns in Featured Image
      */
@@ -30,6 +30,10 @@ public class Preferences {
     /**
      * To be able to limit card printing for test
      */
-    public static final boolean TEST_MODE = true;
-    
+    public static final boolean TEST_MODE = false;
+
+    public static final int TEST_ASSET_COUNT = 2;
+
+    public static final int SCREEN_HEIGHT = 600;
+
 }

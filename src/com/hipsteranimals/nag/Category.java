@@ -17,7 +17,7 @@ public class Category {
         });
 
         if (TEST_MODE) {
-            assets = new Asset[1];
+            assets = new Asset[TEST_ASSET_COUNT];
         } else {
             assets = new Asset[files.length];
         }

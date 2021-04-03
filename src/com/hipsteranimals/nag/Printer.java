@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.EventQueue;
+import static com.hipsteranimals.nag.Preferences.*;
 
 public abstract class Printer extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -27,7 +28,11 @@ public abstract class Printer extends JPanel {
         finishedListeners = new ArrayList<Finished>();
         started = false;
 
-        setSize(width(), height());
+        if (imageHeight() > SCREEN_HEIGHT) {
+            setSize((int) (imageWidth() * ((double) SCREEN_HEIGHT) / imageHeight()), SCREEN_HEIGHT);
+        } else {
+            setSize(imageWidth(), imageHeight());
+        }
     }
 
     public void start() {
@@ -42,9 +47,9 @@ public abstract class Printer extends JPanel {
 
     protected abstract void draw(Graphics2D g);
 
-    protected abstract int width();
+    protected abstract int imageWidth();
 
-    protected abstract int height();
+    protected abstract int imageHeight();
 
     protected abstract String fileName();
 
@@ -56,12 +61,13 @@ public abstract class Printer extends JPanel {
             return;
         }
 
-        var bImg = new BufferedImage(width(), height(), BufferedImage.TYPE_INT_ARGB);
+        var bImg = new BufferedImage(imageWidth(), imageHeight(), BufferedImage.TYPE_INT_ARGB);
         var cg = bImg.createGraphics();
 
         draw((Graphics2D) cg);
 
-        g.drawImage(bImg, 0, 0, this);
+        var screenImg = scale(bImg, ((double) getHeight()) / imageHeight());
+        g.drawImage(screenImg, 0, 0, this);
 
         EventQueue.invokeLater(() -> {
             try {
@@ -81,21 +87,12 @@ public abstract class Printer extends JPanel {
     }
 
     protected void drawCollectable(Collectable collectable, Graphics2D g, int x, int y) {
-        int imageHeight = getHeight();
-        int canvasHeight = 800;
-        double scaleRate = 1.0;
-
-        if (imageHeight > canvasHeight) {
-            scaleRate = ((double) canvasHeight) / imageHeight;
-            drawCollectable(collectable, g, x, y, scaleRate);
-        }
-        System.out.printf("canvas height: %d, image :%d, scaleRate: %f", canvasHeight, imageHeight, scaleRate);
-        drawCollectable(collectable, g, x, y, scaleRate);
+        drawCollectable(collectable, g, x, y, 1);
     }
 
     protected void drawCollectable(Collectable collectable, Graphics2D g, int x, int y, double scaleRate) {
         for (var asset : collectable.assets()) {
-            g.drawImage(scale(asset.image(), scaleRate), x, y, this);
+            g.drawImage(scale(asset.image(), scaleRate), x, y, null);
         }
     }
 
@@ -104,8 +101,8 @@ public abstract class Printer extends JPanel {
             return image;
         }
 
-        var width = (int) (image.getWidth(this) * scaleRate);
-        var height = (int) (image.getHeight(this) * scaleRate);
+        var width = (int) (image.getWidth(null) * scaleRate);
+        var height = (int) (image.getHeight(null) * scaleRate);
 
         return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
